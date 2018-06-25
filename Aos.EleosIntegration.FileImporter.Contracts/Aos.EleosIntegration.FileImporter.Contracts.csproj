@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Aos.EleosIntegration.FileImporter</RootNamespace>
-    <AssemblyName>Aos.EleosIntegration.FileImporter</AssemblyName>
+    <ProjectGuid>{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Aos.EleosIntegration.FileImporter.Contracts</RootNamespace>
+    <AssemblyName>Aos.EleosIntegration.FileImporter.Contracts</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,6 +32,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,16 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="IFileData.cs" />
+    <Compile Include="IFileSweeper.cs" />
+    <Compile Include="IMetadataParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlMetadataParser.cs" />
+    <Compile Include="ZipFileSweeper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Aos.EleosIntegration.FileImporter.Contracts\Aos.EleosIntegration.FileImporter.Contracts.csproj">
-      <Project>{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}</Project>
-      <Name>Aos.EleosIntegration.FileImporter.Contracts</Name>
+    <ProjectReference Include="..\Aos.EleosIntegration.FileImporter.Dto\Aos.EleosIntegration.FileImporter.Dto.csproj">
+      <Project>{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}</Project>
+      <Name>Aos.EleosIntegration.FileImporter.Dto</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

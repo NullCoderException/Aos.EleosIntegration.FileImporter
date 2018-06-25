@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aos.EleosIntegration.FileImporter", "Aos.EleosIntegration.FileImporter\Aos.EleosIntegration.FileImporter.csproj", "{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aos.EleosIntegration.FileImporter.Contracts", "Aos.EleosIntegration.FileImporter.Contracts\Aos.EleosIntegration.FileImporter.Contracts.csproj", "{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aos.EleosIntegration.FileImporter.Dto", "Aos.EleosIntegration.FileImporter.Dto\Aos.EleosIntegration.FileImporter.Dto.csproj", "{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D800A1-9A18-4CB6-ABBA-E9C832E13E60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A240DD76-FE35-4DAA-B99C-32D767E2C6ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
