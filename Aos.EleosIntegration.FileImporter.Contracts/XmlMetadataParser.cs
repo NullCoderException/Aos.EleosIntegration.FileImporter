@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Aos.EleosIntegration.FileImporter.Dto;
 
 namespace Aos.EleosIntegration.FileImporter.Contracts
 {
     public class XmlMetadataParser : IMetadataParser
     {
-        public FileMetadata ParseMetadataFile(string fileName)
+        public DriveAxleDocument ParseMetadataFile(string xml)
         {
-            XDocument document = XDocument.Load(fileName);
-            return null;
+            System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(DriveAxleDocument));
+
+            using (StringReader sr = new StringReader(xml))
+            {
+                return (DriveAxleDocument)ser.Deserialize(sr);
+            }
         }
     }
 }

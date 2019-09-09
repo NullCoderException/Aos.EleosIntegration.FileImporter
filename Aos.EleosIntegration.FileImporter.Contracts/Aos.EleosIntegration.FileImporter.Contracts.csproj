@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -42,12 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmailSender.cs" />
     <Compile Include="IFileData.cs" />
-    <Compile Include="IFileSweeper.cs" />
+    <Compile Include="IEleosFileImporter.cs" />
     <Compile Include="IMetadataParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlMetadataParser.cs" />
-    <Compile Include="ZipFileSweeper.cs" />
+    <Compile Include="EleosZipFileImporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aos.EleosIntegration.FileImporter.Dto\Aos.EleosIntegration.FileImporter.Dto.csproj">

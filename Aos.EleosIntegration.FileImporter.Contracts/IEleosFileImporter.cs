@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Aos.EleosIntegration.FileImporter.Contracts
 {
-    public interface IFileSweeper
+    public interface IEleosFileImporter
     {
         List<string> FindZipFilesInDirectory(string dir);
         void ProcessZipFile(string path);

@@ -1,5 +1,4 @@
-﻿using Aos.EleosIntegration.FileImporter.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +8,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
 {
     public interface IMetadataParser
     {
-        FileMetadata ParseMetadataFile(string fileName);
+        DriveAxleDocument ParseMetadataFile(string xml);
     }
 }
