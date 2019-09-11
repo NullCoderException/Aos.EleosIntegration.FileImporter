@@ -16,7 +16,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
     {
         public void SendEmail(MailMessage message)
         {
-            new SmtpClient("smtp.server.com", 25).Send(message);
+            //new SmtpClient("smtp.server.com", 25).Send(message);
         }
     }
 }

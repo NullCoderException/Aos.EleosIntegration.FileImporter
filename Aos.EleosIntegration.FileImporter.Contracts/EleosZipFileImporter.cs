@@ -26,27 +26,10 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
             sender.SendEmail(message);
         }
 
-        private void ImportDocument(string zipPath, DriveAxleDocument metadata)
-        {
-            string[] extensions = new[] { ".pdf", ".tiff", ".jpg", ".png", ".bmp" };
-            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-            {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    Console.WriteLine(entry.FullName.PadLeft(5));
-                    if (extensions.Any(x => entry.FullName.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        var stream = entry.Open();
-                        //byte[] fileData = new BinaryReader(entry.Open()).ReadBytes((int)entry.Length);
-                        //var fileData = new StreamReader();
-                    }
-                }
-            }
-        }
-
         private MailMessage InternalProcessZipFile(string zipPath)
         {
             DriveAxleDocument metadata = null;
+
             MailMessage message = new MailMessage();
             message.From = new MailAddress(ConfigurationManager.AppSettings["SendEmailFromAddress"]);
 
@@ -62,7 +45,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         IMetadataParser parser = new XmlMetadataParser();
                         metadata = parser.ParseMetadataFile(reader.ReadToEnd());
 
-                        if (metadata.CustomProperties.SCANMODE == "DOCUMENT")
+                        if (metadata.CustomProperties?.SCANMODE == "DOCUMENT")
                         {
                             //is a document
 
@@ -80,6 +63,12 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                 message.Body = $"Driver {metadata.SDKUserId} sent an accident report on {metadata.CreatedAt} with the following info: ";
                                 //add custom properties to body
                             }
+                            if (metadata.CustomProperties.FormType == "LoadPics")
+                            {
+                                //Is a LoadPics form type with no SCANMODE
+
+                                //DO STUFF
+                            }
                         }
                     }
                     else if (extensions.Any(x => entry.FullName.EndsWith(x, StringComparison.OrdinalIgnoreCase)))
@@ -93,25 +82,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                 }
             }
             return message;
-        }
-
-        private DriveAxleDocument ProcessMetadata(string zipPath)
-        {
-            DriveAxleDocument metadata = null;
-            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-            {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    Console.WriteLine(entry.FullName.PadLeft(5));
-                    if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                    {
-                        StreamReader reader = new StreamReader(entry.Open());
-                        IMetadataParser parser = new XmlMetadataParser();
-                        metadata = parser.ParseMetadataFile(reader.ReadToEnd());
-                    }
-                }
-            }
-            return metadata;
         }
 
         public List<string> FindZipFilesInDirectory(string dir)
