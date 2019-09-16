@@ -5,6 +5,7 @@
 //  Author: Chris Thomas <cthomas@aos.biz>
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -16,7 +17,8 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
     {
         public void SendEmail(MailMessage message)
         {
-            //new SmtpClient("smtp.server.com", 25).Send(message);
+            new SmtpClient(ConfigurationManager.AppSettings["EmailServer"], 25).Send(message);
+            //new SmtpClient("192.168.100.8", 25).Send(message);
         }
     }
 }

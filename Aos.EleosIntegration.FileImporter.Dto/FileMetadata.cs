@@ -366,14 +366,14 @@ public partial class DriveAxleDocumentCustomProperties
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class DriveAxleDocumentIdentifiers
 {
-    private object loadNumberField;
+    private string loadNumberField;
 
-    private object billOfLadingNumberField;
+    private string billOfLadingNumberField;
 
     private string confirmationNumberField;
 
     /// <remarks/>
-    public object LoadNumber
+    public string LoadNumber
     {
         get
         {
@@ -386,7 +386,7 @@ public partial class DriveAxleDocumentIdentifiers
     }
 
     /// <remarks/>
-    public object BillOfLadingNumber
+    public string BillOfLadingNumber
     {
         get
         {

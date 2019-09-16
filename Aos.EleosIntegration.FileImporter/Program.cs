@@ -6,6 +6,7 @@
 using Aos.EleosIntegration.FileImporter.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace Aos.EleosIntegration.FileImporter
 
         private static void TestFileSweeper()
         {
-            const string dir = @"C:\Eleos\";
+            //string dir = @"C:\Eleos\";
+            string dir = ConfigurationManager.AppSettings["DataDirectory"];
             IEleosFileImporter sweeper = new EleosZipFileImporter();
 
             var zips = sweeper.FindZipFilesInDirectory(dir);

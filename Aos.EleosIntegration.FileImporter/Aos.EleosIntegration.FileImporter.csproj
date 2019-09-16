@@ -7,7 +7,7 @@
     <ProjectGuid>{D0523B1F-9EAB-44E1-B3E9-31B39D199D1D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Aos.EleosIntegration.FileImporter</RootNamespace>
-    <AssemblyName>Aos.EleosIntegration.FileImporter</AssemblyName>
+    <AssemblyName>AosEleosFileEmailer</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
