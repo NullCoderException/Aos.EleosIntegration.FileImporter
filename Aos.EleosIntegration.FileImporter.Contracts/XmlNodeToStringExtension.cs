@@ -3,11 +3,6 @@
 //  explicit written permission from AOS, LLC.
 //
 //  Author: Chris Thomas <cthomas@aos.biz>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aos.EleosIntegration.FileImporter.Contracts
 {

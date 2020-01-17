@@ -4,12 +4,9 @@
 //
 //  Author: Chris Thomas <cthomas@aos.biz>
 using Aos.EleosIntegration.FileImporter.Contracts;
+using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aos.EleosIntegration.FileImporter
 {
@@ -17,21 +14,31 @@ namespace Aos.EleosIntegration.FileImporter
     {
         private static void Main(string[] args)
         {
-            TestFileSweeper();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("Logs\\myapp.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            ProcessZipFiles();
+
+            Log.CloseAndFlush();
         }
 
-        private static void TestFileSweeper()
+        private static void ProcessZipFiles()
         {
             //string dir = @"C:\Eleos\";
             string dir = ConfigurationManager.AppSettings["DataDirectory"];
             IEleosFileImporter sweeper = new EleosZipFileImporter();
 
             var zips = sweeper.FindZipFilesInDirectory(dir);
+            Log.Information("Starting file emailign process");
             foreach (var zip in zips)
             {
                 Console.WriteLine(zip);
                 sweeper.ProcessZipFile(zip);
             }
+            Log.Information("....File emailing process complete");
         }
     }
 }

@@ -3,6 +3,7 @@
 //  explicit written permission from AOS, LLC.
 //
 //  Author: Chris Thomas <cthomas@aos.biz>
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,9 +11,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Mail;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aos.EleosIntegration.FileImporter.Contracts
 {
@@ -23,8 +21,11 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
         public void ProcessZipFile(string zipPath)
         {
             // Normalizes the path.
+
             zipPath = Path.GetFullPath(zipPath);
+            Log.Information($"Processing zip file {zipPath}");
             var message = InternalProcessZipFile(zipPath);
+            Log.Information($"...Done processing {zipPath}");
             _emailSender = new EmailSender();
             _emailSender.SendEmail(message);
         }
@@ -36,72 +37,102 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
             MailMessage message = new MailMessage();
             message.From = new MailAddress(ConfigurationManager.AppSettings["EmailFromAddress"]);
 
-            string[] extensions = new[] { ".pdf", ".tiff", ".jpg", ".png", ".bmp" };
+            string[] extensions = new[] { ".pdf", ".tif", ".jpg", ".png", ".bmp" };
             using (ZipArchive archive = ZipFile.OpenRead(zipPath))
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
                     if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)) //is an xml metadata file
                     {
+                        Log.Information($"Found metadata file {entry.FullName}");
+
                         //found metadata .xml file, parse to object
                         StreamReader reader = new StreamReader(entry.Open());
                         IMetadataParser parser = new XmlMetadataParser();
-                        metadata = parser.ParseMetadataFile(reader.ReadToEnd());
+                        string xml = reader.ReadToEnd();
+                        metadata = parser.ParseMetadataFile(xml);
+
+                        //not great to double parse but not terrible
+                        var customProperties = parser.GetCustomProperties(xml);
+
                         string loadNumber = metadata.Identifiers.LoadNumber;
+
                         message.From = new MailAddress(ConfigurationManager.AppSettings["EmailFromAddress"]);
-                        message.To.Add("cthomas@aos.biz");
                         if (metadata.CustomProperties?.SCANMODE == "DOCUMENT")
                         {
                             //is a document
+                            var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                            foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                message.To.Add(address);
+                            }
 
-                            message.To.Add(ConfigurationManager.AppSettings["DocumentEmailAddress"]);
                             message.Subject = $"load={loadNumber},driver={metadata.SDKUserId}";
                             message.Body = $"This is a document from driver {metadata.SDKUserId}";
+                        }
+                        else if (metadata.CustomProperties?.SCANMODE == "PHOTOGRAPH" && metadata.CustomProperties.FormType == "Email")
+                        {
+                            Log.Information($"Found IWX Email/Photograph document");
+                            message.To.Add(metadata.CustomProperties.EMAILADDRESS);
+                            message.From = new MailAddress(metadata.SDKUserId + "@iwxdriver.com");
+                            message.Subject = metadata.SDKUserId + " from IWX Driver App";
+
+                            message.Body = metadata.CustomProperties.EMAILBODY;
                         }
                         else
                         {
                             //common "NOT A DOCUMENT" email building logic
-                            message.Subject = $"Accident Report from Driver {metadata.SDKUserId}";
+                            message.Subject = $"{metadata.CustomProperties.FormType} Report from Driver {metadata.SDKUserId}";
 
-                            message.Body = $"Driver {metadata.SDKUserId} sent an accident report on {metadata.CreatedAt} with the following info: \r\n";
+                            message.Body = $"Driver {metadata.SDKUserId} sent an {metadata.CustomProperties.FormType} report on {metadata.CreatedAt.ToLocalTime()} with the following info: \r\n";
                             message.Body += $"Driver : {metadata.SDKUserId}\r\n";
                             if (!String.IsNullOrEmpty(loadNumber)) message.Body += $"Load Number : {loadNumber}\r\n";
 
-                            PropertyInfo[] properties = metadata.CustomProperties.GetType().GetProperties();
-
-                            foreach (PropertyInfo property in properties)
+                            //using property dictionary instead of reflection
+                            //PropertyInfo[] properties = metadata.CustomProperties.GetType().GetProperties();
+                            foreach (var customProperty in customProperties)
                             {
-                                if (property.GetValue(metadata.CustomProperties) != null && (property.Name != "SCANMODE"))
+                                if ((customProperty.Value != null) && (customProperty.Key != "SCANMODE") && (customProperty.Key != "SentAt"))
                                 {
-                                    message.Body += property.Name + ":  " + property.GetValue(metadata.CustomProperties) + "\r\n";
+                                    message.Body += customProperty.Key + ": " + customProperty.Value + "\r\n";
                                 }
                             }
 
                             //try to append EmailAddress to form type unless form type is null to get destination email address
                             string toEmailSetting = metadata.CustomProperties.FormType + "EmailAddress";
+
                             if (toEmailSetting == "EmailAddress")
                             {
-                                message.To.Add(ConfigurationManager.AppSettings["DefaultEmailAddress"]);
+                                var addresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
+                                foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    message.To.Add(address);
+                                }
                             }
                             else
                             {
-                                message.To.Add(ConfigurationManager.AppSettings[toEmailSetting]);
+                                var addresses = ConfigurationManager.AppSettings[toEmailSetting];
+                                if (addresses != null)
+                                {
+                                    foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        message.To.Add(address);
+                                    }
+                                }
+                                else
+                                {
+                                    var defaultAddresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
+                                    foreach (var address in defaultAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        message.To.Add(address);
+                                    }
+                                }
                             }
-
-                            //if (metadata.CustomProperties.FormType == "22-ACCIDENT")
-                            //{
-                            //    //Is a custom accident
-
-                            //    //add custom properties to body
-                            //}
-                            //if (metadata.CustomProperties.FormType == "LoadPics")
-                            //{
-                            //    //DO STUFF
-                            //}
                         }
                     }
                     else if (extensions.Any(x => entry.FullName.EndsWith(x, StringComparison.OrdinalIgnoreCase))) //is an image file
                     {
+                        Log.Information($"Found attachment {entry.FullName}");
                         var stream = new MemoryStream();
 
                         // extract the content from the zip archive entry

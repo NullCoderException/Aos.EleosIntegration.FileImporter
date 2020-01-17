@@ -5,6 +5,9 @@
 //  Author: Chris Thomas <cthomas@aos.biz>
 
 // NOTE: Generated code may require at least .NET Framework 4.5 or .NET Core/Standard 2.0.
+using System.Collections.Generic;
+using System.Xml.Serialization;
+
 /// <remarks/>
 [System.SerializableAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -31,6 +34,15 @@ public partial class DriveAxleDocument
     private object documentTypesField;
 
     private object documentPageTypesField;
+
+    private Dictionary<string, string> _customPropertiesDictionary = new Dictionary<string, string>();
+
+    [XmlIgnore]
+    public Dictionary<string, string> CustomPropertiesDictionary
+    {
+        get { return _customPropertiesDictionary; }
+        set { _customPropertiesDictionary = value; }
+    }
 
     /// <remarks/>
     public System.DateTime CreatedAt
@@ -192,6 +204,10 @@ public partial class DriveAxleDocumentCustomProperties
     private string hIGHWAYNUMBERField;
 
     private string tRUCKSTOPINFOField;
+
+    private string eMAILADDRESSField;
+
+    private string eMAILBODYField;
 
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("INTERSTATE-NUMBER")]
@@ -356,6 +372,34 @@ public partial class DriveAxleDocumentCustomProperties
         set
         {
             this.tRUCKSTOPINFOField = value;
+        }
+    }
+
+    /// Added manually CDT 1-16-2020
+    [System.Xml.Serialization.XmlElementAttribute("EMAIL-ADDRESS")]
+    public string EMAILADDRESS
+    {
+        get
+        {
+            return this.eMAILADDRESSField;
+        }
+        set
+        {
+            this.eMAILADDRESSField = value;
+        }
+    }
+
+    /// Added manually CDT 1-16-2020
+    [System.Xml.Serialization.XmlElementAttribute("EMAIL-BODY")]
+    public string EMAILBODY
+    {
+        get
+        {
+            return this.eMAILBODYField;
+        }
+        set
+        {
+            this.eMAILBODYField = value;
         }
     }
 }

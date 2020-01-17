@@ -3,13 +3,9 @@
 //  explicit written permission from AOS, LLC.
 //
 //  Author: Chris Thomas <cthomas@aos.biz>
-using System;
-using System.Collections.Generic;
+using Serilog;
 using System.Configuration;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aos.EleosIntegration.FileImporter.Contracts
 {
@@ -17,7 +13,9 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
     {
         public void SendEmail(MailMessage message)
         {
+            Log.Information($"Sending email {message.Subject}");
             new SmtpClient(ConfigurationManager.AppSettings["EmailServer"], 25).Send(message);
+            Log.Information($"...Email sent successfully");
             //new SmtpClient("192.168.100.8", 25).Send(message);
         }
     }
