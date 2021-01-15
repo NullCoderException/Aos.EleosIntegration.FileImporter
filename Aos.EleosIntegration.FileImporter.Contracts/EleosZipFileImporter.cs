@@ -82,7 +82,14 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         else
                         {
                             //common "NOT A DOCUMENT" email building logic
-                            message.Subject = $"{metadata.CustomProperties.FormType} Report from Driver {metadata.SDKUserId}";
+                            if (metadata.CustomProperties.FormType.Trim().ToUpper().Equals("DOCUMENT-METADATA"))
+                            {
+                                message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
+                            }
+                            else
+                            {
+                                message.Subject = $"{metadata.CustomProperties.FormType} Report from Driver {metadata.SDKUserId}";
+                            }
 
                             message.Body = $"Driver {metadata.SDKUserId} sent an {metadata.CustomProperties.FormType} report on {metadata.CreatedAt.ToLocalTime()} with the following info: \r\n";
                             message.Body += $"Driver : {metadata.SDKUserId}\r\n";
