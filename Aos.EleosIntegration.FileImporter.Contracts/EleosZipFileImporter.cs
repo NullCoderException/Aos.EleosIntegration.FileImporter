@@ -68,7 +68,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             }
 
                             message.Subject = $"load={loadNumber},driver={metadata.SDKUserId}";
-                            message.Body = $"This is a document from driver {metadata.SDKUserId}";
                         }
                         else if (metadata.CustomProperties?.SCANMODE == "PHOTOGRAPH" && metadata.CustomProperties.FormType == "Email")
                         {
@@ -76,8 +75,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             message.To.Add(metadata.CustomProperties.EMAILADDRESS);
                             message.From = new MailAddress(metadata.SDKUserId + "@iwxdriver.com");
                             message.Subject = metadata.SDKUserId + " from IWX Driver App";
-
-                            message.Body = metadata.CustomProperties.EMAILBODY;
                         }
                         else
                         {
@@ -89,20 +86,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             else
                             {
                                 message.Subject = $"{metadata.CustomProperties.FormType} Report from Driver {metadata.SDKUserId}";
-                            }
-
-                            message.Body = $"Driver {metadata.SDKUserId} sent an {metadata.CustomProperties.FormType} report on {metadata.CreatedAt.ToLocalTime()} with the following info: \r\n";
-                            message.Body += $"Driver : {metadata.SDKUserId}\r\n";
-                            if (!String.IsNullOrEmpty(loadNumber)) message.Body += $"Load Number : {loadNumber}\r\n";
-
-                            //using property dictionary instead of reflection
-                            //PropertyInfo[] properties = metadata.CustomProperties.GetType().GetProperties();
-                            foreach (var customProperty in customProperties)
-                            {
-                                if ((customProperty.Value != null) && (customProperty.Key != "SCANMODE") && (customProperty.Key != "SentAt"))
-                                {
-                                    message.Body += customProperty.Key + ": " + customProperty.Value + "\r\n";
-                                }
                             }
 
                             //try to append EmailAddress to form type unless form type is null to get destination email address
@@ -134,6 +117,20 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                         message.To.Add(address);
                                     }
                                 }
+                            }
+                        }
+
+                        message.Body = $"Driver {metadata.SDKUserId} sent an {metadata.CustomProperties.FormType} report on {metadata.CreatedAt.ToLocalTime()} with the following info: \r\n";
+                        message.Body += $"Driver : {metadata.SDKUserId}\r\n";
+                        if (!String.IsNullOrEmpty(loadNumber)) message.Body += $"Load Number : {loadNumber}\r\n";
+
+                        //using property dictionary instead of reflection
+                        //PropertyInfo[] properties = metadata.CustomProperties.GetType().GetProperties();
+                        foreach (var customProperty in customProperties)
+                        {
+                            if ((customProperty.Value != null) && (customProperty.Key != "SCANMODE") && (customProperty.Key != "SentAt"))
+                            {
+                                message.Body += customProperty.Key + ": " + customProperty.Value + "\r\n";
                             }
                         }
                     }

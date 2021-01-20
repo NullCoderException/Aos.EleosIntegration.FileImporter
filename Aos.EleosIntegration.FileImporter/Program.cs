@@ -32,7 +32,7 @@ namespace Aos.EleosIntegration.FileImporter
             IEleosFileImporter sweeper = new EleosZipFileImporter();
 
             var zips = sweeper.FindZipFilesInDirectory(dir);
-            Log.Information("Starting file emailign process");
+            Log.Information("Starting file emailing process");
             foreach (var zip in zips)
             {
                 Console.WriteLine(zip);
