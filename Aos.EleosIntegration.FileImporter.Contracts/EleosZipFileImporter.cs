@@ -67,14 +67,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                 message.To.Add(address);
                             }
 
-                            message.Subject = $"load={loadNumber},driver={metadata.SDKUserId}";
-                        }
-                        else if (metadata.CustomProperties?.SCANMODE == "PHOTOGRAPH" && metadata.CustomProperties.FormType == "Email")
-                        {
-                            Log.Information($"Found IWX Email/Photograph document");
-                            message.To.Add(metadata.CustomProperties.EMAILADDRESS);
-                            message.From = new MailAddress(metadata.SDKUserId + "@iwxdriver.com");
-                            message.Subject = metadata.SDKUserId + " from IWX Driver App";
+                            message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                         }
                         else
                         {
