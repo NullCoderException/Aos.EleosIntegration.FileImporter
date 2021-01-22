@@ -12,5 +12,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
         DriveAxleDocument ParseMetadataFile(string xml);
 
         Dictionary<string, string> GetCustomProperties(string xml);
+
+        Dictionary<string, string> GetDocumentTypes(string xml);
     }
 }

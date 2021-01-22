@@ -35,5 +35,20 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
             }
             return result;
         }
+
+        public Dictionary<string, string> GetDocumentTypes(string xml)
+        {
+            XDocument doc = XDocument.Parse(xml);
+            var xElement = doc.Descendants("DocumentTypes");
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if(xElement != null)
+            {
+                foreach(var child in xElement.Elements())
+                {
+                    result.Add(child.Name.LocalName, child.Value);
+                }
+            }
+            return result;
+        }
     }
 }

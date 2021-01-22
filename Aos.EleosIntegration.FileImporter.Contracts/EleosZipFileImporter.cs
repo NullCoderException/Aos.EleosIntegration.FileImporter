@@ -55,6 +55,8 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         //not great to double parse but not terrible
                         var customProperties = parser.GetCustomProperties(xml);
 
+                        var documentTypes = parser.GetDocumentTypes(xml);
+
                         string loadNumber = metadata.Identifiers.LoadNumber;
 
                         message.From = new MailAddress(ConfigurationManager.AppSettings["EmailFromAddress"]);
@@ -124,6 +126,15 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             if ((customProperty.Value != null) && (customProperty.Key != "SCANMODE") && (customProperty.Key != "SentAt"))
                             {
                                 message.Body += customProperty.Key + ": " + customProperty.Value + "\r\n";
+                            }
+                        }
+
+                        //using property dictionary to print document types
+                        foreach(var documentType in documentTypes)
+                        {
+                            if(documentType.Value != null)
+                            {
+                                message.Body += documentType.Key + ": " + documentType.Value + "\r\n";
                             }
                         }
                     }
