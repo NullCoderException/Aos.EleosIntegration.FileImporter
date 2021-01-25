@@ -77,6 +77,13 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             if (metadata.CustomProperties.FormType.Trim().ToUpper().Equals("DOCUMENT-METADATA"))
                             {
                                 message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
+                                
+                                //is a document
+                                var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                                foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    message.To.Add(address);
+                                }
                             }
                             else
                             {
