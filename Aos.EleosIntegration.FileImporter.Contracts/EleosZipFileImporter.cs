@@ -71,6 +71,25 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
 
                             message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                         }
+                        else if (metadata.CustomProperties?.FormType == "EMAIL")
+                        {
+                            message.Subject = $"Email Report from Driver {metadata.SDKUserId}";
+                            if (metadata.CustomProperties?.EMAILADDRESS != null)
+                            {
+                                message.To.Add(metadata.CustomProperties.EMAILADDRESS);
+                                message.Body = metadata.CustomProperties.EMAILBODY;
+                            }
+                            else
+                            {
+                                var defaultAddresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
+                                foreach (var address in defaultAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    message.To.Add(address);
+                                }
+                                message.Body = metadata.CustomProperties.EMAILBODY;
+                            }
+
+                        }
                         else
                         {
                             //common "NOT A DOCUMENT" email building logic
