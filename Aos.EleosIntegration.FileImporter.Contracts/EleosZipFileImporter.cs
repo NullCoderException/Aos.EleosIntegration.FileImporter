@@ -71,7 +71,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
 
                             message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                         }
-                        else if (metadata.CustomProperties?.EMAILADDRESS != null && metadata.CustomProperties?.FormType == "EMAIL")
+                        else if (metadata.CustomProperties?.EMAILADDRESS != null && metadata.CustomProperties.FormType == "Email")
                         {
                             message.To.Add(metadata.CustomProperties.EMAILADDRESS);
                             message.Subject = $"{metadata.CustomProperties.FormType} Report from Driver {metadata.SDKUserId}";
