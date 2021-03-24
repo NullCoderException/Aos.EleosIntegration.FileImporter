@@ -62,14 +62,37 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         message.From = new MailAddress(ConfigurationManager.AppSettings["EmailFromAddress"]);
                         if (metadata.CustomProperties?.SCANMODE == "DOCUMENT")
                         {
-                            //is a document
-                            var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
-                            foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                            // Use DocumentType Address if special documentTypes
+                            if(documentTypes != null)
                             {
-                                message.To.Add(address);
+                                string documentTypeAddresses = "";
+                                foreach(var value in documentTypes.Values)
+                                {
+                                    documentTypeAddresses = ConfigurationManager.AppSettings[$"Document{new string(value.Where(x => !char.IsWhiteSpace(x)).ToArray())}EmailAddress"];
+                                }
+
+                                if(!string.IsNullOrWhiteSpace(documentTypeAddresses))
+                                {
+                                    foreach (var address in documentTypeAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        message.To.Add(address);
+                                    }
+                                }
+                                
+                            }
+                            else
+                            {
+                                //Default Email Address
+                                var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                                foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    message.To.Add(address);
+                                }
+
+                                message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                             }
 
-                            message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
+                           
                         }
                         else if (metadata.CustomProperties?.EMAILADDRESS != null && metadata.CustomProperties.FormType == "Email")
                         {
@@ -82,12 +105,35 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                             if (metadata.CustomProperties.FormType.Trim().ToUpper().Equals("DOCUMENT-METADATA"))
                             {
                                 message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
-                                
-                                //is a document
-                                var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
-                                foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+
+                                // Use DocumentType Address if special documentTypes
+                                if (documentTypes != null)
                                 {
-                                    message.To.Add(address);
+                                    string documentTypeAddresses = "";
+                                    foreach (var value in documentTypes.Values)
+                                    {
+                                        documentTypeAddresses = ConfigurationManager.AppSettings[$"Document{new string(value.Where(x => !char.IsWhiteSpace(x)).ToArray())}EmailAddress"];
+                                    }
+
+                                    if (!string.IsNullOrWhiteSpace(documentTypeAddresses))
+                                    {
+                                        foreach (var address in documentTypeAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            message.To.Add(address);
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    //Default Email Address
+                                    var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                                    foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        message.To.Add(address);
+                                    }
+
+                                    message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                                 }
                             }
                             else
