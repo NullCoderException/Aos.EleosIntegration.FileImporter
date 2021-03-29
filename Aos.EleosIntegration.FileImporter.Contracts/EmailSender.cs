@@ -13,7 +13,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
     {
         public void SendEmail(MailMessage message)
         {
-            Log.Information($"Sending email {message.Subject}");
+            Log.Information($"Sending email {message.Subject},email recipient {message.To}.");
             new SmtpClient(ConfigurationManager.AppSettings["EmailServer"], 25).Send(message);
             Log.Information($"...Email sent successfully");
             //new SmtpClient("192.168.100.8", 25).Send(message);

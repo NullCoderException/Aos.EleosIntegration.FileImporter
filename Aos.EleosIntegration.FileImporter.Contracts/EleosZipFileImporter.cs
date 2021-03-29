@@ -62,8 +62,9 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         message.From = new MailAddress(ConfigurationManager.AppSettings["EmailFromAddress"]);
                         if (metadata.CustomProperties?.SCANMODE == "DOCUMENT")
                         {
+                            message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                             // Use DocumentType Address if special documentTypes
-                            if(documentTypes != null)
+                            if (documentTypes != null)
                             {
                                 string documentTypeAddresses = "";
                                 foreach(var value in documentTypes.Values)
@@ -74,6 +75,15 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                 if(!string.IsNullOrWhiteSpace(documentTypeAddresses))
                                 {
                                     foreach (var address in documentTypeAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        message.To.Add(address);
+                                    }
+                                }
+                                else
+                                {
+                                    //Default Email Address
+                                    var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                                    foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
                                     {
                                         message.To.Add(address);
                                     }
@@ -89,7 +99,6 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                     message.To.Add(address);
                                 }
 
-                                message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                             }
 
                            
@@ -102,7 +111,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                         else
                         {
                             //common "NOT A DOCUMENT" email building logic
-                            if (metadata.CustomProperties.FormType.Trim().ToUpper().Equals("DOCUMENT-METADATA"))
+                            if (metadata.CustomProperties?.FormType == "DOCUMENT-METADATA")
                             {
                                 message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
 
@@ -122,18 +131,24 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                             message.To.Add(address);
                                         }
                                     }
+                                    else 
+                                    {
+                                        var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
+                                        foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            message.To.Add(address);
+                                        }
+                                    }
 
                                 }
                                 else
                                 {
-                                    //Default Email Address
+                                    //Default Email Address For Documents
                                     var addresses = ConfigurationManager.AppSettings["DocumentEmailAddress"];
                                     foreach (var address in addresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
                                     {
                                         message.To.Add(address);
                                     }
-
-                                    message.Subject = $"ScanDocs Report from Driver {metadata.SDKUserId}";
                                 }
                             }
                             else
@@ -164,11 +179,15 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                 }
                                 else
                                 {
-                                    var defaultAddresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
-                                    foreach (var address in defaultAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                    if(message.To != null) 
                                     {
-                                        message.To.Add(address);
+                                        var defaultAddresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
+                                        foreach (var address in defaultAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            message.To.Add(address);
+                                        }
                                     }
+                                    
                                 }
                             }
                         }
