@@ -179,7 +179,7 @@ namespace Aos.EleosIntegration.FileImporter.Contracts
                                 }
                                 else
                                 {
-                                    if(message.To != null) 
+                                    if(message.To == null) 
                                     {
                                         var defaultAddresses = ConfigurationManager.AppSettings["DefaultEmailAddress"];
                                         foreach (var address in defaultAddresses.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
